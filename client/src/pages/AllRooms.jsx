@@ -1,13 +1,14 @@
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
 import { assets, facilityIcons, roomsDummyData } from '../assets/assets'
-import { Navigate } from 'react-router-dom'
 import StarRating from '../components/StarRating';
 import { useNavigate } from 'react-router-dom';
+import { useMemo } from "react";
+
 
 const Checkbox = ({ label, selected = false, onChange = () => {} }) => {
     return (
     <label className="flex gap-3 items-center cursor-pointer mt-2 text-sm"> 
-        <input type = "checkbox" checked = {selected} onchange={(e)=>onChange(e.target.checked, label)} />
+        <input type = "checkbox" selected = {selected} onChange={(e)=>onChange(e.target.checked, label)} />
         <span className='font-light select-none'> {label}</span>
 
     </label>)
@@ -46,6 +47,52 @@ const AllRooms = () => {
         'Newest First'
     ];
 
+    const [selectedRoomTypes, setSelectedRoomTypes] = useState([]);
+    const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
+    const [selectedSort, setSelectedSort] = useState("");
+
+    const toggleItem = (value, setFn) => {
+        setFn(prev =>
+         prev.includes(value)
+          ? prev.filter(v => v !== value)
+                                        : [...prev, value]
+                        );
+};
+
+const filteredRooms = useMemo(() => {
+  let rooms = [...roomsDummyData];
+
+  // Filter by room type
+  if (selectedRoomTypes.length) {
+    rooms = rooms.filter(room =>
+      selectedRoomTypes.includes(room.type)
+    );
+  }
+
+  // Filter by price
+  if (selectedPriceRanges.length) {
+    rooms = rooms.filter(room =>
+      priceRanges.some(range =>
+        selectedPriceRanges.includes(range.label) &&
+        room.pricePerNight >= range.min &&
+        room.pricePerNight < range.max
+      )
+    );
+  }
+
+  // Sort
+  if (selectedSort === "price-asc") {
+    rooms.sort((a, b) => a.pricePerNight - b.pricePerNight);
+  }
+
+  if (selectedSort === "price-desc") {
+    rooms.sort((a, b) => b.pricePerNight - a.pricePerNight);
+  }
+
+  return rooms;
+   }, [selectedRoomTypes, selectedPriceRanges, selectedSort]);
+
+
   return (
     <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32'>
        <div>
@@ -65,7 +112,7 @@ const AllRooms = () => {
                 <p onClick={() => {navigate (`/rooms/${room._id}`); scrollTo(0,0);}}
                 className='text-gray-800 text-3xl font-playfair cursor-pointer'>{room.hotel.name}</p>
                 <div className='flex items-center'>
-                    <StarRating />
+                    <StarRating rating={room.rating}/>
                     <p className='ml-2'> 200+ reviews</p>
 
                 </div>
@@ -105,21 +152,21 @@ const AllRooms = () => {
             <div className='px-5 pt-5'>
                 <p className='text-gray-800 font-medium pb-2'>Popular Filters</p>
                 {roomTypes.map((room, index)=>(
-                    <Checkbox key={index} label={room}/>
+                <Checkbox key={index} label={room} selected={selectedRoomTypes.includes(room)} onChange={() => toggleItem(room, setSelectedRoomTypes)}/>
                 ))}
-                            </div>
+                </div>
             <div className='px-5 pt-5'>
                 <p className='text-gray-800 font-medium pb-2'>Price Range</p>
                 {priceRange.map((range, index)=>(
-                    <Checkbox key={index} label={`$ ${range}`}/>
+                    <Checkbox key={index} label={`$ ${range}`} selected={selectedPriceRanges.includes(range.label)} onChange={() => toggleItem(range.label, setSelectedPriceRanges)}/>
                 ))}
-                            </div>
+                </div>
             <div className='px-5 pt-5 pb-7'>
                 <p className='text-gray-800 font-medium pb-2'>Sort Options</p>
                 {sortOptions.map((option, index)=>(
-                    <RadioButton key={index} label={option}/>
+                    <RadioButton key={index} label={option} selected={selectedSort === option.value} onChange={() => setSelectedSort(option.value)}/>
                 ))}
-                            </div>
+                </div>
 
         </div>
        </div>
