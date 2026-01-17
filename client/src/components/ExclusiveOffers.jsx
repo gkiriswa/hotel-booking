@@ -6,8 +6,12 @@ const ExclusiveOffers = () => {
   return (
     <div className='flex flex-col items-center px-6 md:px-16 lg:px-24 xl:px-32 pt-20 pb-30'>
         <div className='flex flex-col md:flex-row items-center justify-between w-full'>
-            <Title align='left' title='Exclusive Offers' subtitle='Discover our exclusive offers handpicked from around 
-            the region just to suite your liking a preference and book your stay today.'/>
+            <Title 
+            align="left" 
+            title="Exclusive Offers" 
+            subtitle="Discover our exclusive offers handpicked from around 
+            the region just to suite your liking a preference and book your stay today."
+            />
             <button className='group flex items-center gap-2 font-medium cursor-pointer max-md:mt-12'>
                 View All Offers
                 <img src={ assets.arrowIcon} alt="arrow icon" 
@@ -23,7 +27,7 @@ const ExclusiveOffers = () => {
                     <div >
                         <p className='text-2xl font-medium font-playfair'>{item.title}</p>
                         <p>{item.description}</p>
-                        <p className='text-xs text-white/70 mt-3'>Expires{item.expiryDate}</p>
+                        <p className='text-xs text-white/70 mt-3'>Expires {item.expiryDate}</p>
                     </div>
                     <button>
                         View Offers
