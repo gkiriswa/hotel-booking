@@ -7,7 +7,7 @@ const Hero = () => {
     bg-[url("/src/assets/heroImage.png")] bg-no-repeat bg-cover bg-center h-screen'>
 
         <p className='bg-[#49B9FF]/50 px-3.5 py-1 rounded-full mt-20'> The Ultimate Hotel Experience</p>
-        <h1 className="font-playfair text-2xl md:text-[56px] md:leading-14 font-bold md:font-extraboldmax-w-xl mt-4"> Discover Your Perfect Stay</h1>
+        <h1 className="font-playfair text-2xl md:text-[56px] md:leading-14 font-bold md:font-extrabold max-w-xl mt-4"> Discover Your Perfect Stay</h1>
         <p className='max-w-130 mt-2 text-sm md:text-base'>Unparalleled Comfort and Convenience await at the Best Hotels Worldwide 
             with breat-taking views of the most iconic cities of the world. Discover your journey today</p>
 
