@@ -12,7 +12,7 @@ const ExclusiveOffers = () => {
             subtitle="Discover our exclusive offers handpicked from around 
             the region just to suite your liking a preference and book your stay today."
             />
-            <button className='group flex items-center gap-2 font-medium cursor-pointer max-md:mt-12'>
+            <button className='group flex items-left gap-2 font-medium cursor-pointer max-md:mt-12'>
                 View All Offers
                 <img src={ assets.arrowIcon} alt="arrow icon" 
                 className='group-hover:translate-x-1 transition-all'/>
