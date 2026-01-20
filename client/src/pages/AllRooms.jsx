@@ -5,23 +5,36 @@ import { useNavigate } from 'react-router-dom';
 import { useMemo } from "react";
 
 
-const Checkbox = ({ label, selected = false, onChange = () => {} }) => {
+/*const Checkbox = ({ label, selected = false, onChange = () => {} }) => {
     return (
     <label className="flex gap-3 items-center cursor-pointer mt-2 text-sm"> 
         <input type = "checkbox" selected = {selected} onChange={(e)=>onChange(e.target.checked, label)} />
         <span className='font-light select-none'> {label}</span>
 
-    </label>)
-}
+    </label>)*/
+ const Checkbox = ({ label, selected, onChange }) => (
+  <label className="flex gap-3 items-center cursor-pointer mt-2 text-sm">
+    <input
+      type="checkbox"
+      checked={selected}
+      onChange={() => onChange(label)}
+    />
+    <span className="font-light select-none">{label}</span>
+  </label>
+)
 
-const RadioButton = ({ label, selected = false, onChange = () => {} }) => {
-    return (
-    <label className="flex gap-3 items-center cursor-pointer mt-2 text-sm"> 
-        <input type = "radio" name="sortOption" checked = {selected} onChange={() => onChange(label)} />
-        <span className='font-light select-none'> {label}</span>
 
-    </label>)
- }
+const RadioButton = ({ label, selected, onChange }) => (
+  <label className="flex gap-3 items-center cursor-pointer mt-2 text-sm">
+    <input
+      type="radio"
+      name="sortOption"
+      checked={selected}
+      onChange={() => onChange(label)}
+    />
+    <span className="font-light select-none">{label}</span>
+  </label>
+);
 
 const AllRooms = () => {
     const navigate = useNavigate();
@@ -35,10 +48,10 @@ const AllRooms = () => {
     ];
 
     const priceRange =[
-        '0 to 500',
-        '500 to 1000',
-        '1000 to 2000',
-        '2000 to 3000'
+         { label: "0 to 500", min: 0, max: 500 },
+         { label: "500 to 1000", min: 500, max: 1000 },
+        { label: "1000 to 2000", min: 1000, max: 2000 },
+        { label: "2000 to 3000", min: 2000, max: 3000 },
     ];
 
     const sortOptions = [
