@@ -1,8 +1,13 @@
 import React from 'react'
 
-const Title = ({ title, subtitle, align, font }) => {
+const Title = ({ title, subtitle, align='center', font }) => {
+  const alignmentClass = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  }[align];
   return (
-    <div className={'flex flex-col justify-center items-center text-center ${align==="left" && "md:items-start md:text-left"}'}>
+    <div className={alignmentClass}>
         <h1 className={`text-4xl md:text-[40px] ${font || "font-playfair"}`}>{title}</h1>
         <p className='text-sm md:text-base text-gray-500/90 mt-2 max-w-174'>{subtitle}</p>
     </div>
