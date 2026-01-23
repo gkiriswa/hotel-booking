@@ -24,8 +24,8 @@ const [bookings, setBookings] = useState(userBookingsDummyData)
         {/*Hotel Details*/}
         <div className='flex flex-col md:flex-row'>
             <img src={booking.room.images[0]} alt="hotel-image" 
-            className='min-md:w-44 rounded shadow object-cover'/>
-            <div className='flex flex-col gap-1.5 max-md:mt-3 min-md:md:ml-4'>
+            className='md:w-44 rounded shadow object-cover'/>
+            <div className='flex flex-col gap-1.5 max-md:mt-3 md:md:ml-4'>
                 <p className='font-playfair text-2xl'>{booking.hotel.name}
                 <span className='font-inter text-sm'> ({booking.room.roomType})</span>
                 </p>
