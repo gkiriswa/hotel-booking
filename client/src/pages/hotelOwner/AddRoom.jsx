@@ -22,8 +22,11 @@ const [inputs, setInputs] = useState({
       'Pool Access': false
     }
 })
-  return (
-    <form>
+        const handleSubmit = (e) => {
+        e.preventDefault()
+      }
+      return (
+        <form onSubmit={handleSubmit}>
       <Title align ='left' font='outfit' title='Add Room' 
       subTitle='Fill in the details carefully and
        accurate room details, pricing, and amenities, to enhance the user booking experience.'/>
@@ -92,7 +95,7 @@ const [inputs, setInputs] = useState({
         </div>
       ))}
     </div>
-    <button className='bg-blue-500 text-white px-8 py-2 rounded mt-8 cursor-pointer'>
+    <button type="submit" className='bg-blue-500 text-white px-8 py-2 rounded mt-8 cursor-pointer'>
       Add Room
     </button>
     </form>
