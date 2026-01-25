@@ -14,7 +14,6 @@ const ListRoom = () => {
          <p className='text-gray-500 mt-8'>All Rooms</p>
           <div className='w-full max-w-3xl text-left border
            border-gray-300 rounded-lg max-h-80 overflow-y-scroll mt-3'>
-          </div>
           <table className='w-full'>
             <thead className='bg-gray-50'>
               <tr>
@@ -44,10 +43,16 @@ const ListRoom = () => {
                       type="checkbox" 
                       className='sr-only peer' 
                       checked={item.isAvailable}  // Fixed: removed space
-                      onChange={() => {/* Add toggle handler */}}
+                       onChange={() => {
+                       setRooms(prev => prev.map(room =>
+                         room._id === item._id
+                           ? { ...room, isAvailable: !room.isAvailable }
+                           : room
+                       ))
+                     }}
                     />
-                    <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200 relative">
-                      <span className="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
+                         <div className={`w-12 h-7 rounded-full transition-colors duration-200 relative ${item.isAvailable ? 'bg-blue-600' : 'bg-slate-300'}`}>
+                     <span className={`absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out ${item.isAvailable ? 'translate-x-5' : ''}`}></span>
                     </div>
                     <span className='text-sm'>
                       {item.isAvailable ? 'Available' : 'Unavailable'}
@@ -60,6 +65,7 @@ const ListRoom = () => {
 
             </tbody>
           </table>
+          </div>
     </div>
   )
 }
