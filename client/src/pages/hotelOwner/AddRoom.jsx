@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Title from '../../components/Title'
 import { assets } from '../../assets/assets'
 
@@ -11,6 +11,21 @@ const AddRoom = () => {
   3: null,
   4: null
 })
+
+    const previewUrls = useMemo(() => {
+      const urls = {}
+      Object.entries(images).forEach(([key, file]) => {
+        urls[key] = file ? URL.createObjectURL(file) : null
+      })
+      return urls
+    }, [images])
+
+    useEffect(() => {
+      return () => {
+        Object.values(previewUrls).forEach((url) => url && URL.revokeObjectURL(url))
+      }
+    }, [previewUrls])
+
 const [inputs, setInputs] = useState({
     roomType: '',
     pricePerNight: 0,
@@ -37,7 +52,7 @@ const [inputs, setInputs] = useState({
       <label htmlFor={`roomImage${key}`} key={key}>
         <img 
           className='max-h-13 cursor-pointer opacity-80'
-          src={images[key] ? URL.createObjectURL(images[key]) : assets.uploadArea} 
+          src={previewUrls[key] || assets.uploadArea}
           alt="" 
         />
         <input 
@@ -72,7 +87,10 @@ const [inputs, setInputs] = useState({
         placeholder='0' 
         className='border border-gray-300 mt-1 rounded p-2 w-24' 
         value={inputs.pricePerNight} 
-        onChange={(e) => setInputs({...inputs, pricePerNight: e.target.value})}/>
+               onChange={(e) => setInputs({
+         ...inputs,
+          pricePerNight: e.target.value === '' ? '' : Number(e.target.value)
+        })}/>
       </div>
     </div>
     <p className='text-gray-800 mt-4'>Amenities</p>
