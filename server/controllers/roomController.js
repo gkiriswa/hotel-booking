@@ -65,18 +65,20 @@ try {
     select: 'image'
     }
     }).sort({createdAt: -1 })
-    res.json({$success: true, rooms});
+    res.json({success: true, rooms});
 } catch (error) {
-    res.json({$success: false, message: error.message});
+    res.status(500).json({ success: false, message: error.message });
 }
 }
 
 // API to get all rooms for a specific hotel
 export const getOwnerRooms = async (req, res) => {
 try {
-    const hotelData = await Hotel({owner: req.auth.userId})
-    const rooms = await Room.find({hotel: hotelData_id.toString()}).populate
-    ("hotel");
+    const hotelData = await Hotel.findOne({ owner: req.auth.userId });
+    if (!hotelData) {
+       return res.status(404).json({ success: false, message: "No Hotel found" });
+        }
+    const rooms = await Room.find({ hotel: hotelData._id }).populate("hotel");
     res.json({success: true, rooms});
 } catch (error) {
     res.json({success: false, message: error.message});
@@ -88,7 +90,10 @@ export const toggleRoomAvailability = async (req, res) => {
 try {
     const { roomId } = req.body;
     const roomData = await Room.findById(roomId);
-    roomData.isAvailable = lroomData.isAvailable;
+    roomData.isAvailable = !roomData.isAvailable;
+        if (!roomData) {
+        return res.status(404).json({ success: false, message: "Room not found" });
+    }
     await roomData.save();
     res.json({ success: true, message: "Room availability Updated" });
 } catch (error) {
