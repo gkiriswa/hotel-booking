@@ -14,7 +14,8 @@ const checkAvailability = async ({ checkInDate, checkOutDate, room })=>{
     const isAvailable = bookings.length == 0;
     return isAvailable;
 } catch (error) {
-    console.error(error.message);
+    console.error(error);
+    throw error;
 }
 }
 // API to check availability of room
@@ -47,7 +48,7 @@ export const createBooking = async (req, res) =>{
     const user = req.user._id;
 
     // Before Booking Check Availability
-    const isAvailable = await checkAvailableility({
+    const isAvailable = await checkAvailability({
     checkInDate,
     checkOutDate,
     room, });
@@ -57,19 +58,22 @@ export const createBooking = async (req, res) =>{
 }
 // Get totalPrice from Room
 const roomData = await Room.findById(room).populate("hotel");
+    if (!roomData) {
+    return res.status(404).json({ success: false, message: "Room not found" });
+    }
 let totalPrice = roomData.pricePerNight;
 
 // Calculate totalPrice based on nights
 const checkIn = new Date(checkInDate)
 const checkOut = new Date(checkOutDate)
 const timeDiff = checkOut.getTime() - checkIn.getTime();
-const nights = Math.cell(timeDiff / (1000 * 3600 * 24));
+const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
 totalPrice *= nights;
 const booking = await Booking.create({
     user,
     room,
-    hotel: roomData.hotel_id,
+    hotel: roomData.hotel._id,
     guests: +guests,
     checkInDate,
     checkOutDate,
@@ -88,7 +92,7 @@ res.json({ success: true, message: "Booking created successfully"})
 
 export const getUserBookings = async (req, res) =>{
     try {
-    const user = req.user_id;
+    const user = req.user._id;
     const bookings = await Booking.find({user}).populate("room hotel").sort
     ({createdAt: -1})
     res.json({success: true, bookings})
@@ -105,7 +109,7 @@ export const getHotelBookings = async (req, res) =>{
         success: false, message: "No Hotel found" });
         }
 
-        const bookings = await Booking.find({hotel: hotel_id}).populate("room hotel user").sort({
+        const bookings = await Booking.find({hotel: hotel._id}).populate("room hotel user").sort({
         createdAt: -1 });
         // Total Bookings
         const totalBookings = bookings.length;
