@@ -3,8 +3,7 @@ import { createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser, useAuth} from "@clerk/clerk-react"
 import { toast } from "react-hot-toast";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -18,20 +17,28 @@ export const AppProvider = ({ children }) =>{
 
     const [isOwner, setIsOwner] = useState(false);
     const [showHotelReg, setShowHotelReg] = useState(false); 
-    const [searhedCities, setSearchedCities] = useState([]);
+    const [searchedCities, setSearchedCities] = useState([]);
+    const retryRef = useRef(null);
 
     const fetchUser = async () => {
         try {
             const {data} = await axios.get('/api/user', {headers: {
             Authorization: `Bearer ${await getToken()}`}})
             if(data.success){
+                           if (retryRef.current) {
+              clearTimeout(retryRef.current);
+              retryRef.current = null;
+            }
             setIsOwner(data.role === "hotelOwner");
             setSearchedCities(data.recentSearchedCities)
             }else{
             // Retry fetching User Details after 5 seconds
-            setTimeout(()=>{
-            fetchUser()
-            },5000)
+                      if (!retryRef.current) {
+              retryRef.current = setTimeout(() => {
+                retryRef.current = null;
+                fetchUser();
+              }, 5000);
+           }
             }
         } catch (error) {
         toast.error(error.message)
@@ -41,12 +48,18 @@ export const AppProvider = ({ children }) =>{
         if(user){
         fetchUser();
         }
+                return () => {
+          if (retryRef.current) {
+            clearTimeout(retryRef.current);
+            retryRef.current = null;
+          }
+        };
     },[user])
 
     const value = {
         currency, navigate, user, getToken,
         isOwner, setIsOwner,
-        showHotelReg, setShowHotelReg, axios, searhedCities, setSearchedCities
+        showHotelReg, setShowHotelReg, axios, searchedCities, setSearchedCities
     }
 
     return (

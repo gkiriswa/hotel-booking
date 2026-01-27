@@ -10,8 +10,8 @@ export default function HotelActions({
       <div className="flex items-center gap-1 text-gray-600">
         <span>⭐</span>
         <span className="text-sm">
-          {reviewCount > 0
-            ? `${rating.toFixed(1)} (${reviewCount})`
+            {reviewCount > 0
+            ? `${(rating ?? 0).toFixed(1)} (${reviewCount})`
             : "No reviews yet"}
         </span>
       </div>

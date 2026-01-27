@@ -50,6 +50,9 @@ export const createReview = async (req, res) => {
 
     res.status(201).json(review);
   } catch (err) {
+       if (err?.code === 11000) {
+     return res.status(400).json({ message: "Already reviewed" });
+   }
     res.status(500).json({ message: "Failed to create review" });
   }
 };

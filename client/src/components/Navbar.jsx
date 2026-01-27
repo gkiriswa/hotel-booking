@@ -112,8 +112,11 @@ const Navbar = () => {
                         </a>
                     ))}
 
-                    {user && <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all" 
-                    onClick={() => isOwner ? navigate('/owner') : setShowHotelReg(true)}>
+                   {user && <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all" 
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      isOwner ? navigate('/owner') : setShowHotelReg(true);
+                    }}>
                     {isOwner ? "Dashboard" : "List your Hotel"}
                     </button>}
 
