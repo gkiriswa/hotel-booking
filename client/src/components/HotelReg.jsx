@@ -12,9 +12,11 @@ const [address, setAddress] = useState("")
 const [contact, setContact] = useState("")
 const [city, setCity] = useState("")
 
+const [loading, setLoading] = useState(false)
 const onSubmitHandler = async (event)=>{
    try {
     event.preventDefault();
+    setLoading(true)
     const {data} = await axios.post('/api/hotels/', {name, contact,
     address, city}, {headers: {Authorization: `Bearer ${await getToken()}`}})
 
@@ -27,7 +29,9 @@ const onSubmitHandler = async (event)=>{
     }
         
       } catch (error) {
-        toast.error(error.message)
+        toast.error(error.response?.data?.message || error.message)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -78,8 +82,8 @@ const onSubmitHandler = async (event)=>{
     {cities.map((city) => <option key={city} value={city}>{city}</option>)}
   </select>
 </div>
-<button className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-6 py-2 rounded cursor-pointer mt-6'>
-    Register
+<button disabled={loading} className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-6 py-2 rounded cursor-pointer mt-6'>
+    {loading ? 'Registering...' : 'Register'}
 </button>
             </div>
 

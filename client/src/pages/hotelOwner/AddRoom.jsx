@@ -45,7 +45,7 @@ const [loading, setLoading] = useState(false)
 
         const onSubmitHandler = async (e) => {
         e.preventDefault()
-        if(!inputs.roomType || !inputs.pricePerNight || !inputs.amenities || 
+     if(!inputs.roomType || inputs.pricePerNight <= 0 || 
           Object.values(images).some(image => image === null)) {
           toast.error('Please fill in all required fields')
           return;
@@ -94,7 +94,7 @@ const [loading, setLoading] = useState(false)
           toast.error(data.message)
         }
       } catch (error) {
-        toast.error(error.data.message)
+         toast.error(error.response?.data?.message || error.message)
       }finally{setLoading(false)}
       }
       return (

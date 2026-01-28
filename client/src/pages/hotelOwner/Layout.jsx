@@ -14,6 +14,10 @@ const Layout = () => {
     }
   }, [isOwner, navigate])
   
+  if (!isOwner) {
+    return null
+  }
+  
   return (
     <div className='flex flex-col h-screen'>
         <Navbar/>
