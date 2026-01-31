@@ -13,7 +13,7 @@ const AddRoom = () => {
   2: null,
   3: null,
   4: null
-})
+  })
 
     const previewUrls = useMemo(() => {
       const urls = {}
@@ -29,7 +29,7 @@ const AddRoom = () => {
       }
     }, [previewUrls])
 
-const [inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState({
     roomType: '',
     pricePerNight: 0,
     amenities: {
@@ -43,10 +43,11 @@ const [inputs, setInputs] = useState({
 
 const [loading, setLoading] = useState(false)
 
-        const onSubmitHandler = async (e) => {
+  const onSubmitHandler = async (e) => {
         e.preventDefault()
-     if(!inputs.roomType || inputs.pricePerNight <= 0 || 
-          Object.values(images).some(image => image === null)) {
+        
+        if(!inputs.roomType || inputs.pricePerNight <= 0 || 
+          Object.values(images).some(image => !image)) {
           toast.error('Please fill in all required fields')
           return;
         }
@@ -65,11 +66,8 @@ const [loading, setLoading] = useState(false)
           images[key] && formData.append('images', images[key])
         })
 
-        const { data } = await axios.post('/api/rooms/', formData, {
-          headers: {
-            Authorization: `Bearer ${await getToken()}`
-          }
-        })
+        const { data } = await axios.post('/api/rooms/add-room/', formData, {headers:
+          {Authorization: `Bearer ${await getToken()}`}})
 
         if (data.success) {
           toast.success(data.message)
@@ -96,7 +94,7 @@ const [loading, setLoading] = useState(false)
       } catch (error) {
          toast.error(error.response?.data?.message || error.message)
       }finally{setLoading(false)}
-      }
+}
       return (
 <form onSubmit={onSubmitHandler}>
       <Title align ='left' font='outfit' title='Add Room' 
