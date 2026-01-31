@@ -1,7 +1,7 @@
 import Hotel from "../models/Hotel.js";
 import { v2 as cloudinary } from "cloudinary";
 import Room from "../models/Room.js";
-
+import fs from "fs";
 // Configure Cloudinary - ADD THIS!
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -76,7 +76,11 @@ export const createRoom = async (req, res) => {
           uploadResult = await cloudinary.uploader.upload(file.path, {
             folder: 'hotel-rooms',
             resource_type: 'auto'
-          });
+          });       
+      // Clean up temp file
+        fs.unlink(file.path, (err) => {
+          if (err) console.error(`Failed to delete temp file: ${file.path}`);
+        });
         } else {
           throw new Error('File has neither buffer nor path');
         }
