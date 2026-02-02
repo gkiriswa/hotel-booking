@@ -95,7 +95,7 @@ const mailOptions = {
     <li><strong>Location:</strong> ${roomData.hotel.address}</li>
     <li><strong>Check In Date:</strong> ${booking.checkInDate.toDateString()}</li>
     <li><strong>Guests:</strong> ${booking.guests}</li>
-    <li><strong>Total Price:</strong>${process.env.CURRENCY || '$'} ${booking.totalPrice}/night</li>
+    <li><strong>Total Price:</strong>${process.env.CURRENCY || '$'} ${booking.totalPrice}</li>
     </ul>
     <p>We look forward to welcoming you to our hotel!</p>
     <p>If you need to make any changes to your booking, please contact us at ${process.env.SENDER_EMAIL}</p>
