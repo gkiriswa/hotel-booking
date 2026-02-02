@@ -1,3 +1,4 @@
+import transporter from "../configs/nodemailer.js";
 import Booking from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
@@ -79,6 +80,29 @@ const booking = await Booking.create({
     checkOutDate,
     totalPrice,
 })
+
+const mailOptions = {
+    from: process.env.SENDER_EMAIL,
+    to: req.user.email,
+    subject: "Booking Confirmation",
+    html: `
+    <h1>Booking Confirmation</h1>
+    <p>Dear ${req.user.username},</p>
+    <p>Thank you for booking with us! Here are the details of your booking:</p>
+    <ul>
+    <li><strong>Booking ID:</strong> ${booking._id}</li>
+    <li><strong>Hotel:</strong> ${roomData.hotel.name}</li>
+    <li><strong>Location:</strong> ${roomData.hotel.address}</li>
+    <li><strong>Check In Date:</strong> ${booking.checkInDate.toDateString()}</li>
+    <li><strong>Guests:</strong> ${booking.guests}</li>
+    <li><strong>Total Price:</strong>${process.env.CURRENCY || '$'} ${booking.totalPrice}/night</li>
+    </ul>
+    <p>We look forward to welcoming you to our hotel!</p>
+    <p>If you need to make any changes to your booking, please contact us at ${process.env.SENDER_EMAIL}</p>
+    `
+}
+
+await transporter.sendMail(mailOptions);
 
 res.json({ success: true, message: "Booking created successfully"})
 
