@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { assets, facilityIcons, roomCommonData } from '../assets/assets'
 import StarRating from '../components/StarRating'
-import { useAppContext } from '../context/appContext'
+import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
 
 const RoomDetails = () => {
@@ -18,9 +18,13 @@ const RoomDetails = () => {
 
     const checkAvailability = async ()=>{
       try {
-        if(!checkInDate >= checkOutDate){
-          toast.error('Check out date must be greater than check in date')
-          return;
+        if (!checkInDate || !checkOutDate) {
+          toast.error('Please select both check-in and check-out dates')
+          return
+        }
+        if (new Date(checkInDate) >= new Date(checkOutDate)) {
+          toast.error('Check out date must be after check in date')
+          return
         }
         const {data} = await axios.post('/api/bookings/check-availability',
           {room: id, checkInDate, checkOutDate})

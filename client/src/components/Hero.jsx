@@ -10,18 +10,25 @@ const Hero = () => {
             const onSearch = async (e)=>{
                 e.preventDefault();
                 navigate(`/rooms?destination=${destination}`)
-                // call api to save recent searched city
-        await axios.post('/api/user/store-recent-search', {recentSearchedCity: destination},
-             {headers: {Authorization: `Bearer ${await getToken()}` }});
-
-        // add destination to searchedCities max 3 recent searched cities
-        setSearchedCities((prevSearchedCities)=>{
-            const updatedSearchedCities = [...prevSearchedCities, destination];
-            if (updatedSearchedCities.length > 3){
-                updatedSearchedCities.shift();
+              // Save recent search only if user is authenticated
+        try {
+            const token = await getToken();
+            if (token) {
+                await axios.post('/api/user/store-recent-search', 
+                    {recentSearchedCity: destination},
+                    {headers: {Authorization: `Bearer ${token}` }});
+                
+                setSearchedCities((prevSearchedCities)=>{
+                    const updatedSearchedCities = [...prevSearchedCities, destination];
+                    if (updatedSearchedCities.length > 3){
+                        updatedSearchedCities.shift();
+                    }
+                    return updatedSearchedCities;
+                });
             }
-            return updatedSearchedCities;
-        })
+        } catch (error) {
+            console.error('Failed to save recent search:', error.message);
+        }
     }
   return (
     <div className='flex flex-col items-start justify-center px-6 md:px-16 lg:px-24 xl:px-32 text-white 

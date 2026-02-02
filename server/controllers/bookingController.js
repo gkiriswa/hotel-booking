@@ -102,7 +102,11 @@ const mailOptions = {
     `
 }
 
-await transporter.sendMail(mailOptions);
+try {
+  await transporter.sendMail(mailOptions);
+} catch (emailError) {
+  console.error('Failed to send booking confirmation email', emailError);
+}
 
 res.json({ success: true, message: "Booking created successfully"})
 
