@@ -7,12 +7,15 @@ const Loader = () => {
     const {nextUrl} = useParams()
 
     useEffect(() => {
+        let timer;
         if (nextUrl) {
-            setTimeout(() => {
+            timer = setTimeout(() => {
                 navigate(`/${nextUrl}`)
             }, 8000)
         }
-    }, [nextUrl])
+        
+        return () => clearTimeout(timer)
+    }, [nextUrl, navigate])
 
   return (
     <div className="flex items-center justify-center h-screen">

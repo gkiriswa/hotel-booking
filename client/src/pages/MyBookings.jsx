@@ -44,13 +44,13 @@ const MyBookings = () => {
         if(paying){
             return;
         }
-        setPaying(true);
-    if (!bookingId) {
-        toast.error("Invalid booking ID");
-        return;
-    }
+        setPaying(true)
     
     try {
+        if (!bookingId) {
+            toast.error("Invalid booking ID");
+            return;
+        }
         const token = await getToken();
         if (!token) {
             toast.error("Please login to make payment");
