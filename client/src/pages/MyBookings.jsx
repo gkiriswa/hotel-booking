@@ -20,9 +20,94 @@ const MyBookings = () => {
         }
     }
 
+
+   /* const handlePayment = async (bookingId) => {
+        // TODO: Implement payment logic
+        try {
+            const {data} = await axios.post('/api/bookings/stripe-payment', 
+                {bookingId}, {headers: {
+                authorization: `Bearer ${await getToken()}`
+            }})
+            if(data.success){
+                window.location.href = data.url;
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    };*/
+
+    const [paying, setPaying] = useState(false);
+
+    const handlePayment = async (bookingId) => {
+        if(paying){
+            return;
+        }
+        setPaying(true)
+    
+    try {
+        if (!bookingId) {
+            toast.error("Invalid booking ID");
+            return;
+        }
+        const token = await getToken();
+        if (!token) {
+            toast.error("Please login to make payment");
+            return;
+        }
+        
+        const { data } = await axios.post('/api/bookings/stripe-payment', 
+            { bookingId }, 
+            {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            }
+        );
+        
+        if (data?.success && data?.url) {
+            window.location.href = data.url;
+        } else {
+            toast.error(data?.message || "Payment failed. Please try again.");
+        }
+    } catch (error) {
+        console.error('Payment error:', error);
+        toast.error(error?.response?.data?.message || error?.message || "Payment failed");
+    }
+    finally {
+        setPaying(false);
+    }
+};
+
     useEffect(()=>{
         fetchUserBookings()
-    }, [])
+    }, [user])
+    /*const [loading, setLoading] = useState(false)
+    const handleMpesaPay = async (bookingId) => {
+        try {
+            setLoading(true)
+            const token = await getToken();
+
+            const response = await axios.post("/api/mpesa/stkpush", {
+                phone: user?.phone || "254725497730",
+                bookingId: bookingId,
+            },{
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
+            if(response.data.success){
+                toast.success("Check your phone for M-Pesa prompt");
+            }else{
+                toast.error(response.data.message || "Failed to process payment");
+            }
+        } catch (error) {
+            toast.error(error.message || "Failed to process payment")
+        } finally {
+            setLoading(false)
+        }
+        };*/
 
   return (
   <div className='py-28 md:pb-35 md:pt-32 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -41,15 +126,16 @@ const MyBookings = () => {
     w-full border-b border-gray-300 py-6 first:border-t'>
         {/*Hotel Details*/}
         <div className='flex flex-col md:flex-row'>
-            <img src={booking.room.images[0]} alt="hotel-image" 
+            <img src={booking.room?.images?.[0] || assets.roomPlaceholder} 
+            alt="hotel-image" 
             className='md:w-44 rounded shadow object-cover'/>
             <div className='flex flex-col gap-1.5 max-md:mt-3 md:md:ml-4'>
-                <p className='font-playfair text-2xl'>{booking.hotel.name}
-                <span className='font-inter text-sm'> ({booking.room.roomType})</span>
+                <p className='font-playfair text-2xl'>{booking.hotel?.name || "Hotel removed"}
+                <span className='font-inter text-sm'> ({booking.room?.roomType || "Room removed"})</span>
                 </p>
                 <div className='flex items-center gap-1 text-sm text-gray-500'> 
                      <img src={assets.locationIcon} alt="location-icon"/>
-                     <span>{booking.hotel.address}</span>
+                     <span>{booking.hotel?.address || "Address removed"}</span>
                 </div>
                  <div className='flex items-center gap-1 text-sm text-gray-500'> 
                      <img src={assets.guestsIcon} alt="guests-icon"/>
@@ -86,7 +172,9 @@ const MyBookings = () => {
     </p>
             </div>
             {!booking.isPaid && (
-    <button className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'>
+    <button onClick={() => handlePayment(booking._id)} 
+    className='px-4 py-1.5 mt-4 text-xs border border-gray-400 
+    rounded-full hover:bg-gray-50 transition-all cursor-pointer'>
     Pay Now
     </button>
             )}
